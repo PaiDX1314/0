@@ -1,12 +1,15 @@
-name: iptvlist
+name: iptv
 
 on:
   schedule:
-    - cron: '0 9,21 * * *'
+    - cron: '0 0/4, * * *'
   push:
     branches:
       - main
-
+      
+env:
+  TZ: Asia/Shanghai
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: GetTime
+        run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S CST')" >> $GITHUB_ENV  
     
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -32,5 +37,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .
-          git commit *.m3u -m "Add generated file"
+          git commit *.m3u -m "$DATE"
           git push -f
